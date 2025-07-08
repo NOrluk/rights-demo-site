@@ -1,0 +1,54 @@
+---
+const AIRTABLE_API_KEY = import.meta.env.PUBLIC_AIRTABLE_API_KEY;
+const AIRTABLE_BASE_ID = import.meta.env.PUBLIC_AIRTABLE_BASE_ID;
+const AIRTABLE_TABLE = 'Cases';
+
+let cases = [];
+
+try {
+  const res = await fetch(
+    `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE}?filterByFormula={Status}='Live'`,
+    {
+      headers: {
+        Authorization: `Bearer ${AIRTABLE_API_KEY}`,
+      },
+    }
+  );
+  const data = await res.json();
+  cases = data.records || [];
+} catch (error) {
+  console.error('Error fetching cases:', error);
+}
+---
+
+<html lang="en">
+  <head>
+    <title>Cases - Human Rights Support</title>
+  </head>
+  <body>
+    <h1>Active Cases</h1>
+    {cases.length === 0 ? (
+      <p>No live cases currently available.</p>
+    ) : (
+      <ul>
+        {cases.map((caseItem) => (
+          <li key={caseItem.id}>
+            <h2>{caseItem.fields.Name}</h2>
+            <p>{caseItem.fields.Description}</p>
+            <p>
+              Raised: ${caseItem.fields['Amount Raised'] || 0} / ${caseItem.fields['Amount Requested']}
+            </p>
+            {caseItem.fields.Image && caseItem.fields.Image[0] && (
+              <img src={caseItem.fields.Image[0].url} alt={caseItem.fields.Name} width="300" />
+            )}
+            <p>
+              <a href={caseItem.fields['Donation Link']} target="_blank" rel="noopener noreferrer">
+                Donate
+              </a>
+            </p>
+          </li>
+        ))}
+      </ul>
+    )}
+  </body>
+</html>
