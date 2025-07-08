@@ -21,34 +21,33 @@ try {
 }
 ---
 
-<html lang="en">
-  <head>
-    <title>Cases - Human Rights Support</title>
-  </head>
-  <body>
-    <h1>Active Cases</h1>
-    {cases.length === 0 ? (
-      <p>No live cases currently available.</p>
-    ) : (
-      <ul>
-        {cases.map((caseItem) => (
-          <li key={caseItem.id}>
-            <h2>{caseItem.fields.Name}</h2>
-            <p>{caseItem.fields.Description}</p>
-            <p>
-              Raised: ${caseItem.fields['Amount Raised'] || 0} / ${caseItem.fields['Amount Requested']}
-            </p>
-            {caseItem.fields.Image && caseItem.fields.Image[0] && (
-              <img src={caseItem.fields.Image[0].url} alt={caseItem.fields.Name} width="300" />
-            )}
-            <p>
-              <a href={caseItem.fields['Donation Link']} target="_blank" rel="noopener noreferrer">
-                Donate
-              </a>
-            </p>
-          </li>
-        ))}
-      </ul>
-    )}
-  </body>
-</html>
+<Layout>  <!-- This assumes you're using a layout component -->
+
+  <h1 class="text-3xl font-bold text-center my-8">Active Human Rights Cases</h1>
+
+  {cases.length === 0 ? (
+    <p class="text-center text-gray-600">No live cases currently available.</p>
+  ) : (
+    <ul class="grid grid-cols-1 md:grid-cols-2 gap-8 px-4">
+      {cases.map((caseItem) => (
+        <li class="bg-white p-6 rounded-lg shadow" key={caseItem.id}>
+          <h2 class="text-xl font-semibold mb-2">{caseItem.fields.Name}</h2>
+          <p class="mb-2">{caseItem.fields.Description}</p>
+          <p class="mb-2">
+            <strong>Raised:</strong> ${caseItem.fields['Amount Raised'] || 0} /
+            ${caseItem.fields['Amount Requested'] || 0}
+          </p>
+          {caseItem.fields.Image && caseItem.fields.Image[0] && (
+            <img src={caseItem.fields.Image[0].url} alt={caseItem.fields.Name} class="mt-2 rounded-lg max-h-64 object-cover" />
+          )}
+          <p class="mt-4">
+            <a href={caseItem.fields['Donation Link']} target="_blank" rel="noopener noreferrer" class="text-blue-600 underline">
+              Donate
+            </a>
+          </p>
+        </li>
+      ))}
+    </ul>
+  )}
+
+</Layout>
